@@ -22,3 +22,17 @@ var_names <- read.table("data/UCI HAR Dataset/features.txt")
 
 colnames(XTest) <- var_names
 colnames(XTrain) <- var_names
+
+colnames(YTest) <- "Activity"
+colnames(YTrain) <- "Activity"
+
+colnames(SubjectTest) <- "Subject"
+colnames(SubjectTrain) <- "Subject"
+
+XTest <- cbind(YTest, XTest)
+XTest <- cbind(SubjectTest, XTest)
+
+XTrain <- cbind(YTrain, XTrain)
+XTrain <- cbind(SubjectTrain, XTrain)
+
+XData <- rbind(XTrain, XTest)
