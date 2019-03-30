@@ -36,3 +36,10 @@ XTrain <- cbind(YTrain, XTrain)
 XTrain <- cbind(SubjectTrain, XTrain)
 
 XData <- rbind(XTrain, XTest)
+
+grep("mean", var_names) + 2
+grep("std", var_names) + 2
+
+XDataM <- XData[, c(1,2,grep("mean\\(", var_names) + 2)]
+XDataS <- XData[, grep("std\\(", var_names) + 2]
+XDataMS <- cbind(XDataM, XDataS)
