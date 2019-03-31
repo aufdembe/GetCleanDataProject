@@ -19,6 +19,9 @@ XTrain <- read.table("data/UCI HAR Dataset/train/X_train.txt")
 YTrain <- read.table("data/UCI HAR Dataset/train/y_train.txt")
 
 var_names <- read.table("data/UCI HAR Dataset/features.txt")
+var_names <- var_names[, 2]
+
+activities <- read.table("data/UCI HAR Dataset/activity_labels.txt")
 
 colnames(XTest) <- var_names
 colnames(XTrain) <- var_names
@@ -26,20 +29,30 @@ colnames(XTrain) <- var_names
 colnames(YTest) <- "Activity"
 colnames(YTrain) <- "Activity"
 
+YTest$ActivityDescr = activities[match(YTest$Activity, activities$V1), "V2"]
+YTrain$ActivityDescr = activities[match(YTrain$Activity, activities$V1), "V2"]
+
 colnames(SubjectTest) <- "Subject"
 colnames(SubjectTrain) <- "Subject"
 
+GroupTest <- as.data.frame(rep("Test", times = 2947))
+colnames(GroupTest) <- "VolunteerSet"
+GroupTrain <- as.data.frame(rep("Train", times = 7352))
+colnames(GroupTrain) <- "VolunteerSet"
+
 XTest <- cbind(YTest, XTest)
 XTest <- cbind(SubjectTest, XTest)
+XTest <- cbind(GroupTest, XTest)
 
 XTrain <- cbind(YTrain, XTrain)
 XTrain <- cbind(SubjectTrain, XTrain)
+XTrain <- cbind(GroupTrain, XTrain)
 
 XData <- rbind(XTrain, XTest)
 
-grep("mean", var_names) + 2
-grep("std", var_names) + 2
-
-XDataM <- XData[, c(1,2,grep("mean\\(", var_names) + 2)]
-XDataS <- XData[, grep("std\\(", var_names) + 2]
+XDataM <- XData[, c(1,2,3,4,grep("mean\\(", var_names) + 4)]
+XDataS <- XData[, grep("std\\(", var_names) + 4]
 XDataMS <- cbind(XDataM, XDataS)
+
+XDataAverages <- aggregate(XDataMS[,5:70], XDataMS[,1:4], FUN = mean)
+write.csv(XDataAverages, "some_X_data_averages.csv")
